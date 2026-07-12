@@ -8,20 +8,15 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Clone JUCE
-        run: git clone https://github.com/juce-framework/JUCE.git
-
-      - name: Remove old build folder
-        shell: pwsh
+      - name: Clone JUCE next to project
+        working-directory: ..
         run: |
-          if (Test-Path build) {
-            Remove-Item build -Recurse -Force
-          }
+          git clone --depth 1 https://github.com/juce-framework/JUCE.git
 
-      - name: Configure CMake
+      - name: Configure
         run: |
           cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 
@@ -32,6 +27,7 @@ jobs:
       - name: Upload VST3
         uses: actions/upload-artifact@v4
         with:
-          name: VST3
+          name: BassNuker-VST3
           path: |
+            build/**/*/*.vst3
             build/**/*.vst3
